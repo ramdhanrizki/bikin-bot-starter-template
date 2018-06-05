@@ -25,8 +25,11 @@ use LINE\LINEBot\MessageBuilder\Imagemap\BaseSizeBuilder;
 use Illuminate\Foundation\Inspiring;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder;
 
+$pass_signature = true; 
+
 class LinebotController extends Controller
 {
+   
     public function webhook(Request $req){
         //log events
         Log::useFiles($this->file_path_line_log);
@@ -35,16 +38,18 @@ class LinebotController extends Controller
         $bot = new LINEBot($httpClient, [
             'channelSecret' => config('services.botline.secret')
         ]);
-
-        $signature = $req->header(HTTPHeader::LINE_SIGNATURE);
-        if (empty($signature)) {
-            abort(401);
-        }
-        try {
-            $events = $bot->parseEventRequest($req->getContent(), $signature);
-        } catch (\Exception $e) {
-            logger()->error((string) $e);
-            abort(200);
+        
+        if(!$pass_signature){
+            $signature = $req->header(HTTPHeader::LINE_SIGNATURE);
+            if (empty($signature)) {
+                abort(401);
+            }
+            try {
+                $events = $bot->parseEventRequest($req->getContent(), $signature);
+            } catch (\Exception $e) {
+                logger()->error((string) $e);
+                abort(200);
+            }
         }
 
         foreach ($events as $event) {
