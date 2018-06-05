@@ -25,21 +25,32 @@ use LINE\LINEBot\MessageBuilder\Imagemap\BaseSizeBuilder;
 use Illuminate\Foundation\Inspiring;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder;
 
-$pass_signature = true; 
+//Digunakan untuk menyimpan log 
+use Illuminate\Support\Facades\Log;
+
+
 
 class LinebotController extends Controller
 {
-   
+    //Set lokasi Log
+    public $file_path_line_log;
+
+    public function __construct()
+    {
+      $this->file_path_line_log = storage_path().'/logs/line-log.log';
+    }
+
     public function webhook(Request $req){
         //log events
-        // Log::useFiles($this->file_path_line_log);
-        // Log::info($req->all());
+        Log::useFiles($this->file_path_line_log);
+        Log::info($req->all());
+
         $httpClient = new CurlHTTPClient(config('services.botline.access'));
         $bot = new LINEBot($httpClient, [
             'channelSecret' => config('services.botline.secret')
         ]);
         
-        // if(!$pass_signature){
+        
         //     $signature = $req->header(HTTPHeader::LINE_SIGNATURE);
         //     if (empty($signature)) {
         //         abort(401);
@@ -50,7 +61,6 @@ class LinebotController extends Controller
         //         logger()->error((string) $e);
         //         abort(200);
         //     }
-        // }
 
         // foreach ($events as $event) {
         //     switch ($event->getText()) {
