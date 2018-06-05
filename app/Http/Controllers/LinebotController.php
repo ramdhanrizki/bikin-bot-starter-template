@@ -32,35 +32,35 @@ class LinebotController extends Controller
    
     public function webhook(Request $req){
         //log events
-        Log::useFiles($this->file_path_line_log);
-        Log::info($req->all());
+        // Log::useFiles($this->file_path_line_log);
+        // Log::info($req->all());
         $httpClient = new CurlHTTPClient(config('services.botline.access'));
         $bot = new LINEBot($httpClient, [
             'channelSecret' => config('services.botline.secret')
         ]);
         
-        if(!$pass_signature){
-            $signature = $req->header(HTTPHeader::LINE_SIGNATURE);
-            if (empty($signature)) {
-                abort(401);
-            }
-            try {
-                $events = $bot->parseEventRequest($req->getContent(), $signature);
-            } catch (\Exception $e) {
-                logger()->error((string) $e);
-                abort(200);
-            }
-        }
+        // if(!$pass_signature){
+        //     $signature = $req->header(HTTPHeader::LINE_SIGNATURE);
+        //     if (empty($signature)) {
+        //         abort(401);
+        //     }
+        //     try {
+        //         $events = $bot->parseEventRequest($req->getContent(), $signature);
+        //     } catch (\Exception $e) {
+        //         logger()->error((string) $e);
+        //         abort(200);
+        //     }
+        // }
 
-        foreach ($events as $event) {
-            switch ($event->getText()) {
+        // foreach ($events as $event) {
+        //     switch ($event->getText()) {
                 
-                default:
-                    $replyMessage = new TextMessageBuilder('hallo');
-            }
-            //$this->simpanMessage(["idUser" => $event->getUserId(),"idMessage"=>$event->getMessageId(), "message" => $event->getText()]);
-            $bot->replyMessage($event->getReplyToken(), $replyMessage);
-        }
+        //         default:
+        //             $replyMessage = new TextMessageBuilder('hallo');
+        //     }
+        //     //$this->simpanMessage(["idUser" => $event->getUserId(),"idMessage"=>$event->getMessageId(), "message" => $event->getText()]);
+        //     $bot->replyMessage($event->getReplyToken(), $replyMessage);
+        // }
         return response('OK', 200);
     }
 }

@@ -16,3 +16,7 @@ Route::get('/', function () {
 });
 
 Route::post('/webhook', 'LinebotController@webhook');
+
+Route::post('/testing',function(){
+    return "Hello";
+});
